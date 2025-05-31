@@ -1,0 +1,201 @@
+#include <ctime>
+#include <windows.h> // управление консолью
+#include <array> // массивы
+#include <random>
+#include <iostream>
+#include <algorithm> // Для find
+#include <chrono> //для задержки по времени
+#include <thread> //для задержки по времени (поток)
+#include <fstream>
+
+using namespace std;
+using namespace std::chrono;
+using namespace std::this_thread;
+
+int x;
+int nzv[10] = {
+	100,100,100,100,100,100,100,100,100,100
+};
+
+
+
+string vopros[20] = {
+	"Какая компания разработала игру «The Legend of Zelda: Ocarina of Time»?",
+"В какой игре впервые появился персонаж Марио?",
+"Как называется первая консоль, выпущенная компанией Sony?",
+"Какая игра считается одной из первых в жанре survival horror?",
+"Кто является главным героем серии игр «Metal Gear Solid»?",
+"Как называется крупнейшая в мире выставка видеоигр?",
+"Какая игра установила рекорд по самым быстрым продажам в истории?",
+"Кто создал игру «Minecraft»?",
+"Какая киберспортивная дисциплина наиболее популярна в мире по количеству зрителей?",
+"Как называется первая многопользовательская онлайн-игра (MMO)?",
+"В какой игре можно найти пасхалку с логотипом Valve?",
+"Кто является главным антагонистом в серии игр «Half-Life»?",
+"Какая игра ввела механику «bullet time»?",
+"Какая игра стала прародителем жанра MOBA (Multiplayer Online Battle Arena)?",
+"Кто является создателем серии игр «Grand Theft Auto»?",
+"Какая игра считается одной из первых в жанре «roguelike»?",
+"Какая игра получила звание «Игра года» на The Game Awards в 2018 году?",
+"В какой игре игрок управляет персонажем по имени Геральт из Ривии?",
+"Какая компания разработала движок Unity?",
+"Какая игра была разработана компанией FromSoftware и положила начало жанру Soulslike?"
+};
+
+string otvet[80] = {
+	"Sega", "Nintendo", "Microsoft", "Atari", "Space Invaders", "Pac-Man", "Donkey Kong", "Pong","Sega Saturn", "Nintendo 64", "PlayStation", "Xbox","Doom", 
+	"Resident Evil", "Alone in the Dark", "Silent Hill","Liquid Snake", "Revolver Ocelot", "Solid Snake", "Raiden","Gamescom", "Tokyo Game Show", 
+	"E3 (Electronic Entertainment Expo)", "PAX","Call of Duty: Black Ops", "Grand Theft Auto V", "Red Dead Redemption 2", "Cyberpunk 2077","Gabe Newell", 
+	"Shigeru Miyamoto", "Markus Persson (Notch)", "Hideo Kojima","StarCraft II", "Dota 2", "League of Legends", "Counter-Strike: Global Offensive","MUD1", 
+	"EverQuest", "Ultima Online", "Habitat","Half-Life 2", "Portal", "Team Fortress 2", "Left 4 Dead","Dr. Breen", "G-Man", "Combine Advisor", "Gordon Freeman",
+	"The Matrix: Path of Neo", "Max Payne", "Enter the Matrix", "Stranglehold","StarCraft", "Warcraft III", "Age of Empires", "Defense of the Ancients (DotA)","DMA Design", 
+	"Rockstar North", "Rockstar Games", "Take-Two Interactive","Moria", "Angband", "Rogue", "Nethack","Red Dead Redemption 2", "God of War", "Marvel’s Spider-Man", 
+	"Assassin’s Creed Odyssey","The Elder Scrolls V: Skyrim", "Dark Souls", "The Witcher 3: Wild Hunt", "Dragon Age: Inquisition","Epic Games", "Crytek", "Unity Technologies", 
+	"Id Software","Dark Souls", "Bloodborne", "Demon's Souls", "Sekiro: Shadows Die Twice"
+};
+
+
+string potveti[20] = {
+	"Nintendo","Donkey Kong","PlayStation","Alone in the Dark","Solid Snake","E3 (Electronic Entertainment Expo)","Grand Theft Auto V","Markus Persson (Notch)",
+	"League of Legends","Habitat","Portal","G-Man","Max Payne","Defense of the Ancients (DotA)","Rockstar North","Rogue","God of War","The Witcher 3: Wild Hunt",
+	"Unity Technologies","Demon's Souls"
+};
+
+
+string op;
+string potvet;
+
+
+void zastavka(){
+	string m[] = {
+			  "..................",
+			  "......#....#......",
+			  ".....#.#..#.#.....",
+			  "....#...#....#....",
+			  "...#..........#...",
+			  ".................." };
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE); //доступ к консоли
+	SetConsoleTextAttribute(console, BACKGROUND_BLUE | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);//цвет фона и текста
+
+	
+	system("cls");
+
+	for (int k = 0; k <= m[0].size() - 1; k++)
+	{
+		for (int i = 0; i <= end(m) - begin(m) - 1; i++)
+		{
+			COORD position = { k + 8, 11 + i }; //позиция x и y //вывод в любом месте строка + позиция
+			SetConsoleCursorPosition(console, position);
+			cout << (m[i][k]);// строка i буква k
+			sleep_for(milliseconds(10));
+		}
+		
+	}
+
+	cin.get();
+}
+
+
+void game() {
+	for (int i = 1; i <= 10; i++) {
+		system("cls");
+		cout << "=======================================" << endl;
+		cout << "Вопрос: " << i << endl;
+		cout << "=======================================" << endl;
+
+
+		int start = 0;
+		int end = 19;
+
+		int* da = nullptr;
+
+		do {
+			x = rand() % (end - start + 1) + start; //Случайный номер вопроса
+			da = find(nzv, nzv + 10, x);
+		} while (da != (nzv + 10));
+		nzv[i - 1] = x;
+
+
+		cout << vopros[x] << endl;//Вопрос под номером x
+		potvet = potveti[x]; //Правильный ответ
+
+		string bukvapotvet = ""; //Буква правильного ответа
+		if (potvet == otvet[4 * x]) bukvapotvet = "A";
+		if (potvet == otvet[4 * x + 1]) bukvapotvet = "C";
+		if (potvet == otvet[4 * x + 2]) bukvapotvet = "B";
+		if (potvet == otvet[4 * x + 3]) bukvapotvet = "D";
+
+
+		cout << "A.   " << otvet[4 * x] << "\tC.   " << otvet[4 * x + 1] << endl;
+		cout << "B.   " << otvet[4 * x + 2] << "\tD.   " << otvet[4 * x + 3] << endl;
+
+		cout << "Укажите букву, соответствующую правильному ответу: ";
+
+		cin >> op;
+		if (op == bukvapotvet) {
+			cout << "Правильно" << endl;
+		}
+		else {
+			cout << "Неправильно, правильный ответ: " << potvet << endl;
+		}
+
+		cin.get();
+		cin.get();
+	}
+}
+
+void menu() {
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE); //доступ к консоли
+	SetConsoleCursorPosition(console, { 10,5 });
+	string vibor = "4";
+	bool da = true;
+	while (da) {
+		system("cls");
+		cout << "Выберите действие: " << endl;
+		cout << "1. Прочитать правила игры" << endl;
+		cout << "2. Выбрать категорию" << endl;
+		cout << "3. Случайная категория" << endl;
+		cout << "4. Начать игру" << endl;
+		cout << "5. Закончить" << endl;
+		cout << "________________________________";
+		cin >> vibor;
+		if (vibor != "1" && vibor != "2" && vibor != "3" && vibor != "4" && vibor != "5") {
+			cout << "Ошибка! Повторите ввод." << endl;
+			cin.get();
+			cin.get();
+		}
+		else {
+			da = false;
+			if (vibor == "1") {
+				system("cls");
+				cout << "Правила игры";
+				cin.get();
+				cin.get();
+				menu();
+			}
+			if (vibor == "4") {
+
+				game();
+
+			}
+			if (vibor == "5") { //как прекратить игру
+
+			}
+		}
+
+	}
+
+
+}
+
+int main()
+{
+	system("chcp 1251");
+	setlocale(LC_ALL, "RU");
+	srand(time(0));
+	zastavka();
+	menu();
+	game();
+
+
+}
